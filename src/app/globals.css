@@ -1,26 +1,123 @@
 @import "tailwindcss";
 
+/* ── Brand Tokens ── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Primary */
+  --lilac: #B8A9E8;
+  --hot-pink: #FF6B9D;
+  --sunflower: #FFD23F;
+
+  /* Secondary */
+  --sky-blue: #56C1E8;
+  --coral-red: #FF5E5B;
+  --spearmint: #5CE0B8;
+
+  /* Neutrals */
+  --deep-ink: #1A1A2E;
+  --soft-white: #FAF7F2;
+  --warm-gray: #B8B5B0;
+
+  /* Functional */
+  --background: var(--deep-ink);
+  --foreground: var(--soft-white);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-lilac: var(--lilac);
+  --color-hot-pink: var(--hot-pink);
+  --color-sunflower: var(--sunflower);
+  --color-sky-blue: var(--sky-blue);
+  --color-coral-red: var(--coral-red);
+  --color-spearmint: var(--spearmint);
+  --color-deep-ink: var(--deep-ink);
+  --color-soft-white: var(--soft-white);
+  --color-warm-gray: var(--warm-gray);
+  --font-sans: var(--font-jost);
+  --font-mono: var(--font-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ── Base ── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
 body {
+  margin: 0;
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-jost), "Futura", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Animated geometric patterns (CSS-generated) ── */
+
+@property --stripe-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 135deg;
+}
+
+@keyframes rotate-stripes {
+  to {
+    --stripe-angle: 495deg;
+  }
+}
+
+@keyframes pulse-dots {
+  0%, 100% { opacity: 0.08; }
+  50% { opacity: 0.18; }
+}
+
+@keyframes drift {
+  0% { background-position: 0% 0%; }
+  100% { background-position: 100% 100%; }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes gentle-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+
+/* ── Utility animations ── */
+.animate-fade-in-up {
+  animation: fade-in-up 0.8s ease-out both;
+}
+
+.animate-fade-in-up-delayed {
+  animation: fade-in-up 0.8s ease-out 0.2s both;
+}
+
+.animate-fade-in-up-delayed-2 {
+  animation: fade-in-up 0.8s ease-out 0.4s both;
+}
+
+.animate-fade-in-up-delayed-3 {
+  animation: fade-in-up 0.8s ease-out 0.6s both;
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
