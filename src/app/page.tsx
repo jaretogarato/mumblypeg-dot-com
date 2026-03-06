@@ -1,16 +1,40 @@
+'use client';
+
+import { useRef } from 'react';
+import { SplineBackground } from '@/components/SplineBackground';
+import { useAudioPlayer, Track } from '@/hooks/useAudioPlayer';
+
+const tracks: Track[] = [
+  { num: "01", title: "Bugrabom", src: "/Underbelly/01 Bugrabom.m4a" },
+  { num: "02", title: "Center Of Town", src: "/Underbelly/02 Center Of Town.m4a" },
+  { num: "03", title: "Mystery Girl", src: "/Underbelly/03 Mystery Girl.m4a" },
+  { num: "04", title: "I Tasted Your Kiss", src: "/Underbelly/04 I Tasted Your Kiss.m4a" },
+  { num: "05", title: "Marmalade", src: "/Underbelly/05 Marmalade.m4a" },
+  { num: "06", title: "I Don't Like Music (She Said)", src: "/Underbelly/06 I Don't Like Music (She Said).m4a" },
+  { num: "07", title: "Beautiful Girl", src: "/Underbelly/07 Beautiful Girl.m4a" },
+  { num: "08", title: "Say What You Want", src: "/Underbelly/08 Say What You Want.m4a" },
+  { num: "09", title: "Oh, Tangerine", src: "/Underbelly/09 Oh, Tangerine.m4a" },
+  { num: "10", title: "Why Why Why", src: "/Underbelly/10 Why Why Why.m4a" },
+  { num: "11", title: "Terrible Dragonfly Vs. '80s Brunch", src: "/Underbelly/11 Terrible Dragonfly Vs. '80s Brunch.m4a" },
+  { num: "12", title: "Lady Entropy", src: "/Underbelly/12 Lady Entropy.m4a" },
+];
+
 export default function Home() {
+  const player = useAudioPlayer(tracks);
+  const progressBarRef = useRef<HTMLDivElement>(null);
+
+  const handleProgressClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const bar = progressBarRef.current;
+    if (!bar) return;
+    const rect = bar.getBoundingClientRect();
+    const fraction = (e.clientX - rect.left) / rect.width;
+    player.seek(Math.max(0, Math.min(1, fraction)));
+  };
+
   return (
     <div className="relative min-h-screen w-full overflow-hidden bg-deep-ink">
-      {/* ── 3D Background Layer (Spline scene will go here) ── */}
-      <div
-        id="spline-background"
-        className="pointer-events-none fixed inset-0 z-0"
-        aria-hidden="true"
-      >
-        {/* Placeholder gradient that echoes the brand palette —
-            will be replaced with the Spline 3D interactive scene */}
-        <div className="absolute inset-0 bg-gradient-to-br from-deep-ink via-[#2a1f4e] to-deep-ink" />
-      </div>
+      {/* ── 3D Background Layer ── */}
+      <SplineBackground />
 
       {/* ── Geometric Pattern Overlay ── */}
       <div
@@ -28,7 +52,7 @@ export default function Home() {
       />
 
       {/* ── Main Content ── */}
-      <main className="relative z-10 flex min-h-screen flex-col items-center justify-center px-6 py-16">
+      <main className="pointer-events-none relative z-10 flex min-h-screen flex-col items-center justify-center px-6 py-16">
         {/* ── Header / Branding ── */}
         <header className="mb-12 text-center animate-fade-in-up">
           {/* Decorative arch */}
@@ -52,12 +76,12 @@ export default function Home() {
           </p>
         </header>
 
-        {/* ── Media Player Placeholder ── */}
+        {/* ── Media Player ── */}
         <section
           id="player"
           className="w-full max-w-2xl animate-fade-in-up-delayed"
         >
-          <div className="relative overflow-hidden rounded-3xl border border-white/[0.08] bg-white/[0.04] shadow-2xl backdrop-blur-xl">
+          <div className="pointer-events-auto relative overflow-hidden rounded-3xl border border-white/[0.08] bg-white/[0.04] shadow-2xl backdrop-blur-xl">
             {/* Color-block accent bar */}
             <div className="flex h-1.5">
               <div className="flex-1 bg-lilac" />
@@ -112,18 +136,23 @@ export default function Home() {
                       fontFamily: "var(--font-mono), 'Courier New', monospace",
                     }}
                   >
-                    01 / 12
+                    {player.currentTrack.num} / {String(tracks.length).padStart(2, '0')}
                   </span>
                   <h2 className="text-2xl font-bold tracking-[-0.01em] text-soft-white sm:text-3xl">
-                    Track Title
+                    {player.currentTrack.title}
                   </h2>
                   <p className="mt-1 text-base text-warm-gray">Mumblypeg</p>
 
                   {/* Progress bar */}
                   <div className="mt-6 w-full">
-                    <div className="h-2 w-full overflow-hidden rounded-full bg-white/[0.08]">
+                    <div
+                      ref={progressBarRef}
+                      className="h-2 w-full cursor-pointer overflow-hidden rounded-full bg-white/[0.08]"
+                      onClick={handleProgressClick}
+                    >
                       <div
-                        className="h-full w-[35%] rounded-full bg-sunflower transition-all duration-300"
+                        className="h-full rounded-full bg-sunflower transition-[width] duration-150"
+                        style={{ width: `${player.progress * 100}%` }}
                       />
                     </div>
                     <div
@@ -133,8 +162,8 @@ export default function Home() {
                           "var(--font-mono), 'Courier New', monospace",
                       }}
                     >
-                      <span>1:24</span>
-                      <span>4:02</span>
+                      <span>{player.formattedCurrentTime}</span>
+                      <span>{player.formattedDuration}</span>
                     </div>
                   </div>
 
@@ -143,7 +172,12 @@ export default function Home() {
                     {/* Shuffle */}
                     <button
                       aria-label="Shuffle"
-                      className="text-warm-gray transition-colors duration-200 hover:text-soft-white"
+                      onClick={player.toggleShuffle}
+                      className={`transition-colors duration-200 ${
+                        player.shuffle
+                          ? 'text-sunflower'
+                          : 'text-warm-gray hover:text-soft-white'
+                      }`}
                     >
                       <svg
                         width="20"
@@ -166,6 +200,7 @@ export default function Home() {
                     {/* Previous */}
                     <button
                       aria-label="Previous track"
+                      onClick={player.prev}
                       className="text-soft-white transition-colors duration-200 hover:text-hot-pink"
                     >
                       <svg
@@ -179,24 +214,38 @@ export default function Home() {
                       </svg>
                     </button>
 
-                    {/* Play */}
+                    {/* Play/Pause */}
                     <button
-                      aria-label="Play"
+                      aria-label={player.isPlaying ? 'Pause' : 'Play'}
+                      onClick={player.toggle}
                       className="flex h-14 w-14 items-center justify-center rounded-full bg-hot-pink text-soft-white shadow-lg transition-all duration-200 hover:scale-105 hover:bg-[#ff5a90] active:scale-95"
                     >
-                      <svg
-                        width="22"
-                        height="22"
-                        viewBox="0 0 24 24"
-                        fill="currentColor"
-                      >
-                        <polygon points="6 3 20 12 6 21" />
-                      </svg>
+                      {player.isPlaying ? (
+                        <svg
+                          width="22"
+                          height="22"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                        >
+                          <rect x="6" y="4" width="4" height="16" rx="1" />
+                          <rect x="14" y="4" width="4" height="16" rx="1" />
+                        </svg>
+                      ) : (
+                        <svg
+                          width="22"
+                          height="22"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                        >
+                          <polygon points="6 3 20 12 6 21" />
+                        </svg>
+                      )}
                     </button>
 
                     {/* Next */}
                     <button
                       aria-label="Next track"
+                      onClick={player.next}
                       className="text-soft-white transition-colors duration-200 hover:text-hot-pink"
                     >
                       <svg
@@ -213,7 +262,12 @@ export default function Home() {
                     {/* Repeat */}
                     <button
                       aria-label="Repeat"
-                      className="text-warm-gray transition-colors duration-200 hover:text-soft-white"
+                      onClick={player.toggleRepeat}
+                      className={`transition-colors duration-200 ${
+                        player.repeat
+                          ? 'text-sunflower'
+                          : 'text-warm-gray hover:text-soft-white'
+                      }`}
                     >
                       <svg
                         width="20"
@@ -241,60 +295,52 @@ export default function Home() {
                   Tracklist
                 </h3>
                 <ul className="space-y-1" role="list">
-                  {[
-                    { num: "01", title: "Track One", dur: "3:42" },
-                    { num: "02", title: "Track Two", dur: "4:18" },
-                    { num: "03", title: "Track Three", dur: "3:05" },
-                    { num: "04", title: "Track Four", dur: "5:11" },
-                    { num: "05", title: "Track Five", dur: "3:58" },
-                    { num: "06", title: "Track Six", dur: "4:32" },
-                    { num: "07", title: "Track Seven", dur: "2:47" },
-                    { num: "08", title: "Track Eight", dur: "4:02" },
-                    { num: "09", title: "Track Nine", dur: "3:33" },
-                    { num: "10", title: "Track Ten", dur: "4:45" },
-                    { num: "11", title: "Track Eleven", dur: "3:20" },
-                    { num: "12", title: "Track Twelve", dur: "5:30" },
-                  ].map((track, i) => (
-                    <li
-                      key={track.num}
-                      className={`group flex cursor-pointer items-center gap-4 rounded-xl px-4 py-3 transition-colors duration-200 ${
-                        i === 0
-                          ? "bg-hot-pink/[0.12] text-soft-white"
-                          : "text-warm-gray hover:bg-white/[0.04] hover:text-soft-white"
-                      }`}
-                    >
-                      <span
-                        className={`w-6 font-mono text-xs ${
-                          i === 0 ? "text-hot-pink" : "text-warm-gray"
+                  {tracks.map((track, i) => {
+                    const isActive = i === player.currentTrackIndex;
+                    const dur = player.trackDurations[i];
+                    return (
+                      <li
+                        key={track.num}
+                        onClick={() => player.playTrack(i)}
+                        className={`group flex cursor-pointer items-center gap-4 rounded-xl px-4 py-3 transition-colors duration-200 ${
+                          isActive
+                            ? "bg-hot-pink/[0.12] text-soft-white"
+                            : "text-warm-gray hover:bg-white/[0.04] hover:text-soft-white"
                         }`}
-                        style={{
-                          fontFamily:
-                            "var(--font-mono), 'Courier New', monospace",
-                        }}
                       >
-                        {track.num}
-                      </span>
-                      <span className="flex-1 text-sm font-medium">
-                        {track.title}
-                      </span>
-                      {i === 0 && (
-                        <span className="mr-2 flex items-center gap-[3px]">
-                          <span className="inline-block h-3 w-[2px] animate-pulse rounded-full bg-hot-pink" />
-                          <span className="inline-block h-4 w-[2px] animate-pulse rounded-full bg-hot-pink [animation-delay:0.15s]" />
-                          <span className="inline-block h-2 w-[2px] animate-pulse rounded-full bg-hot-pink [animation-delay:0.3s]" />
+                        <span
+                          className={`w-6 font-mono text-xs ${
+                            isActive ? "text-hot-pink" : "text-warm-gray"
+                          }`}
+                          style={{
+                            fontFamily:
+                              "var(--font-mono), 'Courier New', monospace",
+                          }}
+                        >
+                          {track.num}
                         </span>
-                      )}
-                      <span
-                        className="font-mono text-xs"
-                        style={{
-                          fontFamily:
-                            "var(--font-mono), 'Courier New', monospace",
-                        }}
-                      >
-                        {track.dur}
-                      </span>
-                    </li>
-                  ))}
+                        <span className="flex-1 text-sm font-medium">
+                          {track.title}
+                        </span>
+                        {isActive && player.isPlaying && (
+                          <span className="mr-2 flex items-center gap-[3px]">
+                            <span className="inline-block h-3 w-[2px] animate-pulse rounded-full bg-hot-pink" />
+                            <span className="inline-block h-4 w-[2px] animate-pulse rounded-full bg-hot-pink [animation-delay:0.15s]" />
+                            <span className="inline-block h-2 w-[2px] animate-pulse rounded-full bg-hot-pink [animation-delay:0.3s]" />
+                          </span>
+                        )}
+                        <span
+                          className="font-mono text-xs"
+                          style={{
+                            fontFamily:
+                              "var(--font-mono), 'Courier New', monospace",
+                          }}
+                        >
+                          {dur ? player.formatTime(dur) : '--:--'}
+                        </span>
+                      </li>
+                    );
+                  })}
                 </ul>
               </div>
             </div>
