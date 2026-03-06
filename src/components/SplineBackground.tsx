@@ -23,10 +23,9 @@ export function SplineBackground() {
         }
       >
         <div
-          className="h-full w-full origin-center transition-opacity duration-1000"
+          className="h-full w-full origin-center transition-opacity duration-1000 scale-100 md:scale-125"
           style={{
             opacity: loaded ? 1 : 0,
-            transform: 'scale(1.25)',
           }}
         >
           <Spline

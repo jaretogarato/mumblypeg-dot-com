@@ -46,18 +46,18 @@ export default function Home() {
   };
 
   return (
-    <div className="relative min-h-screen w-full overflow-hidden bg-[#7B5EA7]">
+    <div className="relative min-h-screen w-full overflow-hidden" style={{ background: 'radial-gradient(ellipse at center, #8B6DB7 0%, #5E3D7A 100%)' }}>
       {/* ── 3D Background Layer ── */}
       <SplineBackground />
 
       {/* ── Geometric Pattern Overlay ── */}
       <div
-        className="pointer-events-none fixed inset-0 z-[1] opacity-[0.07]"
+        className="pointer-events-none fixed inset-0 z-[1] opacity-[0.12]"
         aria-hidden="true"
         style={{
           backgroundImage: `
-            radial-gradient(circle, var(--lilac) 1.5px, transparent 1.5px),
-            radial-gradient(circle, var(--hot-pink) 1px, transparent 1px)
+            radial-gradient(circle, var(--soft-white) 1.5px, transparent 1.5px),
+            radial-gradient(circle, var(--sunflower) 1px, transparent 1px)
           `,
           backgroundSize: "48px 48px, 32px 32px",
           backgroundPosition: "0 0, 16px 16px",
