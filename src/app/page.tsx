@@ -5,18 +5,18 @@ import { SplineBackground } from '@/components/SplineBackground';
 import { useAudioPlayer, Track } from '@/hooks/useAudioPlayer';
 
 const tracks: Track[] = [
-  { num: "01", title: "Bugrabom", src: "/Underbelly/01 Bugrabom.m4a" },
-  { num: "02", title: "Center Of Town", src: "/Underbelly/02 Center Of Town.m4a" },
-  { num: "03", title: "Mystery Girl", src: "/Underbelly/03 Mystery Girl.m4a" },
-  { num: "04", title: "I Tasted Your Kiss", src: "/Underbelly/04 I Tasted Your Kiss.m4a" },
-  { num: "05", title: "Marmalade", src: "/Underbelly/05 Marmalade.m4a" },
-  { num: "06", title: "I Don't Like Music (She Said)", src: "/Underbelly/06 I Don't Like Music (She Said).m4a" },
-  { num: "07", title: "Beautiful Girl", src: "/Underbelly/07 Beautiful Girl.m4a" },
-  { num: "08", title: "Say What You Want", src: "/Underbelly/08 Say What You Want.m4a" },
-  { num: "09", title: "Oh, Tangerine", src: "/Underbelly/09 Oh, Tangerine.m4a" },
-  { num: "10", title: "Why Why Why", src: "/Underbelly/10 Why Why Why.m4a" },
-  { num: "11", title: "Terrible Dragonfly Vs. '80s Brunch", src: "/Underbelly/11 Terrible Dragonfly Vs. '80s Brunch.m4a" },
-  { num: "12", title: "Lady Entropy", src: "/Underbelly/12 Lady Entropy.m4a" },
+  { num: "01", title: "Bugrabom", src: "/Underbelly/01-Bugrabom.m4a" },
+  { num: "02", title: "Center Of Town", src: "/Underbelly/02-Center-Of-Town.m4a" },
+  { num: "03", title: "Mystery Girl", src: "/Underbelly/03-Mystery-Girl.m4a" },
+  { num: "04", title: "I Tasted Your Kiss", src: "/Underbelly/04-I-Tasted-Your-Kiss.m4a" },
+  { num: "05", title: "Marmalade", src: "/Underbelly/05-Marmalade.m4a" },
+  { num: "06", title: "I Don't Like Music (She Said)", src: "/Underbelly/06-I-Dont-Like-Music-She-Said.m4a" },
+  { num: "07", title: "Beautiful Girl", src: "/Underbelly/07-Beautiful-Girl.m4a" },
+  { num: "08", title: "Say What You Want", src: "/Underbelly/08-Say-What-You-Want.m4a" },
+  { num: "09", title: "Oh, Tangerine", src: "/Underbelly/09-Oh-Tangerine.m4a" },
+  { num: "10", title: "Why Why Why", src: "/Underbelly/10-Why-Why-Why.m4a" },
+  { num: "11", title: "Terrible Dragonfly Vs. '80s Brunch", src: "/Underbelly/11-Terrible-Dragonfly-Vs.-80s-Brunch.m4a" },
+  { num: "12", title: "Lady Entropy", src: "/Underbelly/12-Lady-Entropy.m4a" },
 ];
 
 export default function Home() {
