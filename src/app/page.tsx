@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 import { SplineBackground } from '@/components/SplineBackground';
 import { useAudioPlayer, Track } from '@/hooks/useAudioPlayer';
 
@@ -23,6 +23,20 @@ export default function Home() {
   const player = useAudioPlayer(tracks);
   const progressBarRef = useRef<HTMLDivElement>(null);
 
+  // Space bar toggles playback
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.code !== 'Space') return;
+      // Don't hijack space when user is typing in an input/textarea
+      const tag = (e.target as HTMLElement)?.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+      e.preventDefault();
+      player.toggle();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [player.toggle]);
+
   const handleProgressClick = (e: React.MouseEvent<HTMLDivElement>) => {
     const bar = progressBarRef.current;
     if (!bar) return;
@@ -32,7 +46,7 @@ export default function Home() {
   };
 
   return (
-    <div className="relative min-h-screen w-full overflow-hidden bg-deep-ink">
+    <div className="relative min-h-screen w-full overflow-hidden bg-[#7B5EA7]">
       {/* ── 3D Background Layer ── */}
       <SplineBackground />
 
@@ -121,10 +135,13 @@ export default function Home() {
                       <rect width="100" height="100" fill="url(#zigzag)" />
                     </svg>
                   </div>
-                  <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <span className="text-xs font-medium uppercase tracking-[0.12em] text-white/70">
-                      Album Art
-                    </span>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <img
+                      src="/underbelly-cover-art.png"
+                      alt="Underbelly album cover"
+                      className="w-[70%] h-auto object-contain"
+                      style={{ filter: 'drop-shadow(0 8px 12px rgba(58, 36, 80, 0.6))' }}
+                    />
                   </div>
                 </div>
 
